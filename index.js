@@ -83,22 +83,14 @@ hint: the strings returned need to exactly match the string in step 4.
  */
 // 3 parameter, data, getYears callback, and getWinners callback
 
-function getWinnersByYear(array, callback1, callback2) {
-    let winners = [''];
-    const win = callback2(array).forEach(function (item){
-        return item.map(function (item) {
-            return callback1(array)[item];
-        })   
-     });
-    winners = win.map(function (item, index) {
-        return `In ${winners[index]}, ${item} won the world cup!`;
-    });
-    return winners;
-    //storer results in variable and use map with item and index
-    // map over winners use index to refer to the year and use item to refer to the current value in winners
-}
 
-console.log('Task 5', getWinners(fifaData, getYears, getWinners));
+function getWinnersByYear(arr, cb1, cb2) {
+    let winners = cb2(arr, getFinals);
+    return cb1(arr, getFinals).map(
+      (years, idx) => `In ${years}, ${winners[idx]} won the world cup!`
+    );
+}
+console.log('task 5',getWinnersByYear(fifaData, getYears, getWinners));
 
 /* 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 Task 6: 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
 Use the higher order function getAverageGoals to do the following: 
@@ -110,10 +102,19 @@ Use the higher order function getAverageGoals to do the following:
  Example of invocation: getAverageGoals(getFinals(fifaData));
 */
 // getfinals cb 
-function getAverageGoals(/* code here */) {
+function getAverageGoals(cb) {
+    // const totalGoals = cb(arg).map(function (item) {
+    //     return item[0]['Home Team Goals' + 'Away Team Goals'];
+    // })
+    // const avgGoals = [];
+     const totalGoals = cb.reduce(function (acc, item) {
+        return acc + item['Home Team Goals'] + item['Away Team Goals'];
+     }, 0);
+    return (totalGoals / cb.length).toFixed(2);
     // use.reduce- add up all the home team goals and divide by teams
 //    hint if you want the 2nd decimal look up toFixed(2)
 }
+console.log(getAverageGoals(getFinals(fifaData)));
 
 
 
